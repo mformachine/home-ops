@@ -1,0 +1,19 @@
+# Secrets — never commit real credentials
+*-secrets.yaml
+*-secret.yaml
+!*-secrets.example.yaml
+!*-secret.example.yaml
+
+# Old flat deployment structure
+n8n-k8s-deployment/
+
+# OS / editor
+.DS_Store
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
+
+# Deprecated scripts
+deploy.sh

@@ -1,0 +1,52 @@
+---
+# POPPLER DEPLOYMENT
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: poppler
+  namespace: n8n-prod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: poppler
+  template:
+    metadata:
+      labels:
+        app: poppler
+    spec:
+      containers:
+        - name: poppler
+          image: chanmo/poppler@sha256:31ff426b70bc32b795c2c41d31a237fb1212b24ce6b1112b4db33e3545a09a2b # locked version
+          ports:
+            - containerPort: 5000
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "50m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+          livenessProbe:
+            tcpSocket:
+              port: 5000
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          readinessProbe:
+            tcpSocket:
+              port: 5000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+---
+# POPPLER SERVICE (For internal K8s communication)
+apiVersion: v1
+kind: Service
+metadata:
+  name: poppler
+  namespace: n8n-prod
+spec:
+  selector:
+    app: poppler
+  ports:
+    - port: 5000
+      targetPort: 5000
