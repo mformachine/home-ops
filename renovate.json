@@ -1,0 +1,40 @@
+{
+    "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+    "extends": [
+        "config:recommended"
+    ],
+    "kubernetes": {
+        "fileMatch": [
+            "\\.yaml$"
+        ]
+    },
+    "packageRules": [
+        {
+            "description": "Auto-merge patch updates (low risk)",
+            "matchUpdateTypes": [
+                "patch"
+            ],
+            "automerge": false
+        },
+        {
+            "description": "Group n8n images together",
+            "matchPackageNames": [
+                "docker.n8n.io/n8nio/n8n"
+            ],
+            "groupName": "n8n"
+        },
+        {
+            "description": "Require manual approval for postgres major versions",
+            "matchPackageNames": [
+                "postgres"
+            ],
+            "matchUpdateTypes": [
+                "major"
+            ],
+            "automerge": false,
+            "labels": [
+                "manual-review"
+            ]
+        }
+    ]
+}
