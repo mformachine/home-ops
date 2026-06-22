@@ -1,39 +1,50 @@
 {
     "$schema": "https://docs.renovatebot.com/renovate-schema.json",
     "extends": [
-        "config:recommended"
+        "config:recommended",
+        "docker:enableMajor",
+        ":semanticCommits"
     ],
     "kubernetes": {
         "fileMatch": [
             "\\.yaml$"
         ]
     },
+    "automerge": false,
+    "timezone": "Europe/Berlin",
+    "schedule": [
+        "before 9am on Monday"
+    ],
+    "dependencyDashboardTitle": "Renovate Dashboard 🤖",
     "packageRules": [
         {
-            "description": "Auto-merge patch updates (low risk)",
-            "matchUpdateTypes": [
-                "patch"
-            ],
-            "automerge": false
-        },
-        {
-            "description": "Group n8n images together",
+            "description": "Group n8n main + worker (must stay in sync)",
             "matchPackageNames": [
                 "docker.n8n.io/n8nio/n8n"
             ],
             "groupName": "n8n"
         },
         {
-            "description": "Require manual approval for postgres major versions",
+            "description": "Database major versions need migration planning",
             "matchPackageNames": [
-                "postgres"
+                "postgres",
+                "redis"
             ],
             "matchUpdateTypes": [
                 "major"
             ],
-            "automerge": false,
             "labels": [
-                "manual-review"
+                "database",
+                "breaking"
+            ]
+        },
+        {
+            "description": "Label all major updates for careful review",
+            "matchUpdateTypes": [
+                "major"
+            ],
+            "labels": [
+                "major"
             ]
         }
     ]
