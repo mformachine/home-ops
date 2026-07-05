@@ -1,8 +1,4 @@
 ---
-# FILEBROWSER DEPLOYMENT
-# Web-based file browser for the USB archive HDD.
-# Pinned to whichever node carries the storage/archive=true label.
-# NOT a cluster dependency — if the HDD is unplugged, FileBrowser shows an empty directory.
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -70,7 +66,6 @@ spec:
             initialDelaySeconds: 5
             periodSeconds: 10
 ---
-# FILEBROWSER SERVICE
 apiVersion: v1
 kind: Service
 metadata:
