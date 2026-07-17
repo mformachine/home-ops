@@ -1,40 +1,83 @@
 {
     "$schema": "https://docs.renovatebot.com/renovate-schema.json",
     "extends": [
-        "config:recommended"
+        "config:recommended",
+        "docker:enableMajor",
+        ":dependencyDashboard",
+        ":semanticCommits"
+    ],
+    "dependencyDashboardTitle": "Renovate Dashboard 🤖",
+    "timezone": "Europe/Berlin",
+    "schedule": [
+        "before 9am on Monday"
+    ],
+    "automerge": false,
+    "ignorePaths": [
+        "**/*-secrets.yaml",
+        "**/*-secret.yaml"
     ],
     "kubernetes": {
         "fileMatch": [
-            "\\.yaml$"
+            "(^|/)kubernetes/.+\\.yaml$"
         ]
     },
     "packageRules": [
         {
-            "description": "Auto-merge patch updates (low risk)",
-            "matchUpdateTypes": [
-                "patch"
-            ],
-            "automerge": false
-        },
-        {
-            "description": "Group n8n images together",
+            "description": "Group n8n main + worker (must stay in sync)",
             "matchPackageNames": [
                 "docker.n8n.io/n8nio/n8n"
             ],
             "groupName": "n8n"
         },
         {
-            "description": "Require manual approval for postgres major versions",
+            "description": "Database major versions need migration planning",
             "matchPackageNames": [
-                "postgres"
+                "postgres",
+                "redis"
             ],
             "matchUpdateTypes": [
                 "major"
             ],
-            "automerge": false,
             "labels": [
-                "manual-review"
+                "database",
+                "breaking"
             ]
+        },
+        {
+            "description": "Major updates use feat commit with breaking change marker",
+            "matchUpdateTypes": ["major"],
+            "semanticCommitType": "feat",
+            "commitMessagePrefix": "{{semanticCommitType}}({{semanticCommitScope}})!:",
+            "commitMessageExtra": "( {{currentVersion}} ➔ {{newVersion}} )",
+            "labels": ["type/major"]
+        },
+        {
+            "description": "Minor updates use feat commit",
+            "matchUpdateTypes": ["minor"],
+            "semanticCommitType": "feat",
+            "commitMessageExtra": "( {{currentVersion}} ➔ {{newVersion}} )",
+            "labels": ["type/minor"]
+        },
+        {
+            "description": "Patch updates use fix commit",
+            "matchUpdateTypes": ["patch"],
+            "semanticCommitType": "fix",
+            "commitMessageExtra": "( {{currentVersion}} ➔ {{newVersion}} )",
+            "labels": ["type/patch"]
+        },
+        {
+            "description": "Digest updates use chore commit",
+            "matchUpdateTypes": ["digest"],
+            "semanticCommitType": "chore",
+            "commitMessageExtra": "( {{currentDigestShort}} ➔ {{newDigestShort}} )",
+            "labels": ["type/digest"]
+        },
+        {
+            "description": "Container image commit messages",
+            "matchDatasources": ["docker"],
+            "semanticCommitScope": "container",
+            "commitMessageTopic": "image {{depName}}",
+            "addLabels": ["renovate/container"]
         }
     ]
 }
