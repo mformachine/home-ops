@@ -1,0 +1,79 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: filebrowser
+  namespace: n8n-prod
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: filebrowser
+  template:
+    metadata:
+      labels:
+        app: filebrowser
+    spec:
+      nodeSelector:
+        storage/archive: "true"
+      volumes:
+        - name: archive-data
+          hostPath:
+            path: /mnt/archive
+            type: DirectoryOrCreate
+        - name: filebrowser-db
+          hostPath:
+            path: /opt/filebrowser
+            type: DirectoryOrCreate
+      initContainers:
+        - name: fix-volume-permissions
+          image: busybox:1.36
+          command: ["sh", "-c", "chown -R 1000:1000 /database"]
+          securityContext:
+            runAsUser: 0
+          volumeMounts:
+            - name: filebrowser-db
+              mountPath: /database
+      containers:
+        - name: filebrowser
+          image: filebrowser/filebrowser:v2.53.1
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: archive-data
+              mountPath: /srv
+            - name: filebrowser-db
+              mountPath: /database
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "50m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: filebrowser-service
+  namespace: n8n-prod
+spec:
+  selector:
+    app: filebrowser
+  ports:
+    - port: 80
+      targetPort: 80
