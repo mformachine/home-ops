@@ -1,0 +1,13 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ./storage.yaml
+  - ./n8n-app.yaml
+  - ./n8n-worker.yaml
+  - ./n8n-ingress.yaml
+  - ./n8n-nodeport.yaml
+  - ./poppler.yaml
+  - ./pdf2img-poppler.yaml
+  - ./pdf2img-goppler.yaml
+  - ./gotenberg.yaml
