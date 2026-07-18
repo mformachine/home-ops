@@ -15,7 +15,7 @@ spec:
   dependsOn:
     - name: database
   interval: 30m
-  path: ./kubernetes/apps/n8n/app
+  path: ./kubernetes/apps/n8n-service/app
   prune: true
   retryInterval: 2m
   sourceRef:
