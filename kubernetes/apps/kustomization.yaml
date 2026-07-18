@@ -1,0 +1,13 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: n8n-prod
+resources:
+  - ./namespace.yaml
+  - ./database/ks.yaml
+  - ./n8n/ks.yaml
+  - ./stirling-pdf/ks.yaml
+  - ./observability/ks.yaml
+  - ./longhorn/ks.yaml
+  - ./filebrowser/ks.yaml
