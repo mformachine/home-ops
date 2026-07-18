@@ -1,0 +1,57 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pdf2img-poppler
+  namespace: n8n-prod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pdf2img-poppler
+  template:
+    metadata:
+      labels:
+        app: pdf2img-poppler
+    spec:
+      containers:
+        - name: pdf2img-poppler
+          image: mformachine/poppler:1.0.0
+          ports:
+            - containerPort: 5000
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "50m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 5000
+            initialDelaySeconds: 10
+            periodSeconds: 30
+            timeoutSeconds: 2
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 5000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 2
+            failureThreshold: 3
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pdf2img-poppler
+  namespace: n8n-prod
+spec:
+  selector:
+    app: pdf2img-poppler
+  ports:
+    - port: 5000
+      targetPort: 5000
