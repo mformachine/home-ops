@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: pdf2img-poppler
-          image: mformachine/poppler:1.0.0
+          image: mformachine/poppler:1.0.1
           ports:
             - containerPort: 5000
           resources:
