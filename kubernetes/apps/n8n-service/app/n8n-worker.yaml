@@ -29,7 +29,7 @@ spec:
           command: ['sh', '-c', 'until nc -z redis 6379; do echo waiting for redis; sleep 2; done;']
       containers:
         - name: n8n-worker
-          image: docker.n8n.io/n8nio/n8n:1.121.2
+          image: docker.n8n.io/n8nio/n8n:1.123.91
           # THIS IS THE KEY CHANGE: Start n8n in worker mode
           command: ["n8n", "worker"]
           env:
