@@ -124,6 +124,26 @@ Order (least to most risky): stirling-pdf → filebrowser → observability → 
 `database` and `n8n-service` don't need their secrets in git yet. Flux leaves the existing
 `n8n-credentials` secret alone because it didn't create it. Encrypt it later with [secrets.md](secrets.md).
 
+### Prefer `flux diff` over `kubectl diff`
+
+`kubectl diff` only compares against what `kubectl apply` last recorded. Fields added some other way
+(`kubectl edit`, `kubectl set`, `kubectl rollout restart`) are invisible to it, but Flux removes them
+when it takes ownership, because they aren't in git. On 2026-11-08 this restarted n8n and n8n-worker:
+a `restartedAt` pod-template annotation and `imagePullPolicy: Always`, both set by hand, were dropped.
+
+Once Flux is running, `flux diff` does a server-side dry run as Flux itself, so it shows those removals.
+It also fills in `${SECRET_*}` placeholders from the cluster. Run it from a checkout of the PR branch:
+
+```bash
+flux diff ks <kustomization-name> --path ./kubernetes/apps/<app>/app
+```
+
+For anything not yet under Flux, check which fields came from hand edits:
+
+```bash
+kubectl get deploy <name> -n <ns> -o yaml --show-managed-fields | grep -E 'manager: kubectl-(edit|rollout|patch|set)'
+```
+
 ## If something goes wrong
 
 ### Bootstrap hangs on "waiting for GitRepository", controllers in CrashLoopBackOff
@@ -161,10 +181,14 @@ flux suspend ks <app>       # stop Flux touching that app; the cluster stays as 
 flux resume ks <app>        # after fixing the repo
 ```
 
-`flux uninstall` removes Flux but leaves every workload it was managing in place.
+`flux uninstall` removes Flux but leaves every workload it was managing in place. It's the only
+safe way to remove Flux: Flux manages its own components (`kubernetes/flux/cluster/flux-system`),
+so deleting those files or the `flux-system` Kustomization makes Flux prune itself, CRDs included.
 
 ## After it's connected
 
 - `main` is now the source of truth. `kubectl apply` / `kubectl edit` changes are reverted on the next reconcile (≤30 min). Change things by PR.
 - Any manual checkout used for `kubectl apply` is no longer how things get deployed.
+- Flux manages itself. Flux upgrades arrive as Renovate PRs that change
+  `kubernetes/flux/cluster/flux-system/gotk-components.yaml`; merging one upgrades the controllers.
 - Next steps, each as its own PR: encrypt secrets, CI checks on PRs, branch protection, then let Renovate PRs in.
