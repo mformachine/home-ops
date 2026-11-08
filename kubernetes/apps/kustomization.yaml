@@ -13,4 +13,4 @@ resources:
   - ./longhorn-service/ks.yaml
   - ./traefik/ks.yaml
   - ./database/ks.yaml
-  # - ./n8n-service/ks.yaml
+  - ./n8n-service/ks.yaml
