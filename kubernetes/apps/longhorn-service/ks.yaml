@@ -8,6 +8,10 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-age
   interval: 30m
   path: ./kubernetes/apps/longhorn-service/app
   postBuild:

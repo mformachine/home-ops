@@ -7,6 +7,8 @@ metadata:
   annotations:
     traefik.ingress.kubernetes.io/router.entrypoints: websecure
     traefik.ingress.kubernetes.io/router.tls.certresolver: letsencrypt
+    # Basic auth (longhorn-auth-middleware.yaml). Format: <namespace>-<name>@kubernetescrd
+    traefik.ingress.kubernetes.io/router.middlewares: longhorn-system-longhorn-basic-auth@kubernetescrd
 spec:
   rules:
     - host: longhorn.${SECRET_DOMAIN}

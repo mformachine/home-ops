@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: longhorn-basic-auth-users
+  namespace: longhorn-system
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
+type: Opaque
+data:
+  users: ENC[AES256_GCM,data:8Lkk+96xKKYgVjM1qi+mmREp5AQBiYB4arTvIADCKFCaH8TNmimmYeb1PKiwniJeaoeZMHT6llUaUzYgBQkUc6krdobez1RYwv6Sgmp/A08WLcnpN5Z0Ph1iFto=,iv:hdmfm+V7MaSJj+QSWVBQVfpxgXVpdT/zJwtSUdlxmXs=,tag:o7uWSJX6vf83ty7haOWQXQ==,type:str]
+sops:
+  age:
+    - enc: |
+        -----BEGIN AGE ENCRYPTED FILE-----
+        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBPbEUrOGlUSkE2VmttWTVS
+        K1R6QVd4L3RnRTI4OVlxb1dCK1NPTGF3MGpZCjYzSWdyR1l5d1M5aSt1ZGtRSE5x
+        UWRIeCtVTElYL3BZYWRRNFRrMFhyTDAKLS0tIHoxQlVpNkM1cnJpOGFNWDV1Mk9q
+        MkxTeDJwZ0M3aVNzRk9kYXRiM1UxRDAKrMb4KYjkBK2l0eu3QVs7EQCrnDL10v3q
+        QCDjY/ibDPKD34ZYJaA848mw/O2RtRoLgbB0m+n0ZH9soIGpMlI4MA==
+        -----END AGE ENCRYPTED FILE-----
+      recipient: age1qfm8xjsmntk0jxxkal6qulvv9u8c49mmlzg8awu7r30qnr0zwsjqfn7teq
+  encrypted_regex: ^(data|stringData)$
+  lastmodified: "2026-11-08T21:06:36Z"
+  mac: ENC[AES256_GCM,data:t1ApVddJrritUzGvXXrix3FnNHHRjfj7XrROb2oVTOWHTFrc8HGafqhVdq1pt2xpjNxkGq/Q0EWRg1ZaSPGZGImPdgCmagVvFfNjlznxCmgKXXlrADYKAqVAgVnv2h/nowz/o0bNKzeuIen8GBAr++LS4T8Q5pLSmG5G8QlRxg0=,iv:w60vc/33ufYS6F5D/7Xx4UqoJJL6jxer2PTq7EeTsMw=,tag:kd9DkICHKuzJ++/uHyMjfA==,type:str]
+  mac_only_encrypted: true
+  version: 3.13.3

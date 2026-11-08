@@ -23,6 +23,7 @@ with the private key stored in the `sops-age` Secret in `flux-system`.
 | `kubernetes/apps/cluster-secrets.sops.yaml` | `flux-system/cluster-secrets` | Flux `postBuild` substitution (domain, emails) |
 | `kubernetes/apps/database/app/n8n-credentials.sops.yaml` | `n8n-prod/n8n-credentials` | Postgres, Redis, n8n, n8n-worker |
 | `kubernetes/apps/traefik/app/cloudflare-api-token.sops.yaml` | `kube-system/cloudflare-api-token` | Traefik (Let's Encrypt DNS-01) |
+| `kubernetes/apps/longhorn-service/app/longhorn-basic-auth-users.sops.yaml` | `longhorn-system/longhorn-basic-auth-users` | Traefik basic auth for the Longhorn UI (htpasswd, bcrypt; stored base64 under `data:` because `$` in bcrypt hashes would clash with Flux substitution) |
 
 `N8N_ENCRYPTION_KEY` must never change: a different value makes every credential stored in n8n unreadable.
 
