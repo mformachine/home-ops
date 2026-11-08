@@ -9,7 +9,7 @@ resources:
   - ./cluster-secrets.sops.yaml
   - ./stirling-pdf/ks.yaml
   - ./filebrowser/ks.yaml
-  # - ./observability/ks.yaml
+  - ./observability/ks.yaml
   # - ./longhorn-service/ks.yaml
   # - ./traefik/ks.yaml
   # - ./database/ks.yaml
