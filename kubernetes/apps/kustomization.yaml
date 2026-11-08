@@ -10,7 +10,7 @@ resources:
   - ./stirling-pdf/ks.yaml
   - ./filebrowser/ks.yaml
   - ./observability/ks.yaml
-  # - ./longhorn-service/ks.yaml
+  - ./longhorn-service/ks.yaml
   # - ./traefik/ks.yaml
   # - ./database/ks.yaml
   # - ./n8n-service/ks.yaml
