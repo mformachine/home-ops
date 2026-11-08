@@ -21,38 +21,24 @@ Kubernetes manifests for a self-hosted homelab cluster running on k3s.
 
 ```
 kubernetes/
-├── components/
-│   └── traefik/                  # Ingress + TLS configuration
-│       ├── traefik-config.yaml
-│       └── traefik-cloudflare-secret.yaml
+├── flux/cluster/                 # Flux entry point (bootstrap points here)
+│   ├── flux-system/              # Flux components + GitRepository (generated)
+│   └── ks.yaml                   # cluster-apps -> kubernetes/apps
 │
-├── apps/
-│   ├── database/                 # Shared data stores
-│   │   ├── postgres.yaml         # PVC + Deployment + Service
-│   │   └── redis.yaml            # PVC + Deployment + Service
-│   │
-│   ├── n8n-service/              # Workflow automation
-│   │   ├── n8n-app.yaml
-│   │   ├── n8n-worker.yaml
-│   │   ├── n8n-secrets.yaml      
-│   │   ├── n8n-ingress.yaml      # n8n.homelab.xyz
-│   │   ├── n8n-nodeport.yaml     # :30000
-│   │   ├── storage.yaml          # n8n PVC
-│   │   ├── poppler.yaml
-│   │   ├── pdf2img-poppler.yaml
-│   │   ├── pdf2img-goppler.yaml
-│   │   └── gotenberg.yaml
-│   │
-│   ├── stirling-pdf/             # PDF toolkit
-│   │   ├── stirling-pdf.yaml
-│   │   ├── stirling-pdf-nodeport.yaml   # :30001
-│   │   └── stirling-pdf-ingress.yaml    # pdf.homelab.xyz
-│   │
-│   ├── observability/            # Monitoring
-│   │   ├── grafana.yaml
-│   │   ├── grafana-nodeport.yaml        # :30002
-│   │   └── grafana-ingress.yaml         # grafana.homelab.xyz
-│   │
-│   └── longhorn-service/         # Storage management
-│       └── longhorn-ingress.yaml        # longhorn.homelab.xyz
+└── apps/                         # One Flux Kustomization (ks.yaml) per app
+    ├── namespace.yaml            # n8n-prod (prune disabled)
+    ├── traefik/                  # HelmChartConfig: Let's Encrypt via Cloudflare DNS-01
+    ├── database/                 # Postgres + Redis (+ n8n-credentials.sops.yaml)
+    ├── n8n-service/              # n8n main + worker, poppler  (n8n.*)
+    ├── stirling-pdf/             # PDF toolkit  (pdf.*, NodePort 30001)
+    ├── observability/            # Grafana      (grafana.*, NodePort 30002)
+    ├── filebrowser/              # File archive (archive.*)
+    └── longhorn-service/         # Longhorn UI ingress  (longhorn.*)
 ```
+
+Each app folder holds a `ks.yaml` (the Flux Kustomization) and an `app/` folder with the manifests.
+
+## Secrets
+
+Secrets are encrypted with SOPS + age and decrypted by Flux in the cluster.
+See [docs/secrets.md](docs/secrets.md). Never commit an unencrypted secret.

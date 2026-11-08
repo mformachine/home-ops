@@ -8,6 +8,3 @@ resources:
   - ./n8n-ingress.yaml
   - ./n8n-nodeport.yaml
   - ./poppler.yaml
-  - ./pdf2img-poppler.yaml
-  - ./pdf2img-goppler.yaml
-  - ./gotenberg.yaml

@@ -4,4 +4,5 @@ kind: Kustomization
 resources:
   - ./postgres.yaml
   - ./redis.yaml
-  - ./secrets.sops.yaml
+  # TODO: add `- ./n8n-credentials.sops.yaml` once it has been created and
+  # encrypted with SOPS (see docs/secrets.md). Never add an unencrypted file here.
