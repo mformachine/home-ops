@@ -126,6 +126,36 @@ Order (least to most risky): stirling-pdf → filebrowser → observability → 
 
 ## If something goes wrong
 
+### Bootstrap hangs on "waiting for GitRepository", controllers in CrashLoopBackOff
+
+Seen on 2026-11-08. Controller logs say `the server has asked for the client to provide credentials`,
+and the k3s log (`sudo journalctl -u k3s | grep 'invalid bearer'`) says
+`serviceaccounts "source-controller" not found`.
+
+Cause: an earlier `flux uninstall` left the `flux-system` Kustomization stuck mid-deletion
+(it has a `deletionTimestamp` and the `finalizers.fluxcd.io` finalizer). When the new
+kustomize-controller starts, it finishes that old deletion and prunes Flux itself: first its
+ServiceAccounts and ClusterRoleBindings, then the CRDs and the `flux-system` namespace if it
+gets that far.
+
+Check for it **before** bootstrapping:
+
+```bash
+kubectl get kustomizations,gitrepositories -A -o custom-columns=NAME:.metadata.name,DELETING:.metadata.deletionTimestamp
+```
+
+Fix, in this order (while the controllers are not running or can't authenticate):
+
+```bash
+kubectl patch kustomization flux-system -n flux-system --type=json -p='[{"op":"remove","path":"/metadata/finalizers"}]'
+flux bootstrap github ...          # same command as step 4; recreates ServiceAccounts and RBAC
+kubectl delete pods -n flux-system --all   # new pods get valid tokens
+```
+
+Never re-run bootstrap first: the restored controllers would resume the old deletion.
+
+### Pausing or removing Flux
+
 ```bash
 flux suspend ks <app>       # stop Flux touching that app; the cluster stays as it is
 flux resume ks <app>        # after fixing the repo
