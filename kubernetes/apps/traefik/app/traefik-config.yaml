@@ -3,6 +3,10 @@ kind: HelmChartConfig
 metadata:
   name: traefik
   namespace: kube-system
+  annotations:
+    # If this file is ever removed from git, Flux must NOT delete the live config:
+    # k3s would redeploy Traefik with defaults and Let's Encrypt would stop working.
+    kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   valuesContent: |-
     # Pass Cloudflare API token to Traefik for DNS-01 challenges
