@@ -23,6 +23,17 @@
     },
     "packageRules": [
         {
+            "description": "Flux 2.10+ requires Kubernetes >= 1.35; the cluster runs k3s 1.34. Remove this cap after upgrading k3s.",
+            "matchPackageNames": ["fluxcd/flux2"],
+            "allowedVersions": "<2.10.0"
+        },
+        {
+            "description": "Flux controller images are updated together with their CRDs by the fluxcd/flux2 update; never bump them individually",
+            "matchFileNames": ["kubernetes/flux/cluster/flux-system/**"],
+            "matchDatasources": ["docker"],
+            "enabled": false
+        },
+        {
             "description": "Group n8n main + worker (must stay in sync)",
             "matchPackageNames": [
                 "docker.n8n.io/n8nio/n8n"
