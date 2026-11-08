@@ -25,7 +25,34 @@ spec:
       - "--certificatesresolvers.letsencrypt.acme.dnschallenge.resolvers=1.1.1.1:53,8.8.8.8:53"
 
     # Redirect all HTTP to HTTPS automatically
+    # (chart v34+ syntax; the old `redirectTo` key is rejected by chart 39's schema)
     ports:
       web:
-        redirectTo:
-          port: websecure
+        http:
+          redirections:
+            entryPoint:
+              to: websecure
+              scheme: https
+              permanent: true
+
+    # Keep /data (acme.json, the Let's Encrypt account + certificates) on a
+    # replicated Longhorn volume. Without it, every new Traefik pod re-requests
+    # all certificates and can hit Let's Encrypt's weekly duplicate limit.
+    persistence:
+      enabled: true
+      storageClass: longhorn
+      accessMode: ReadWriteOnce
+      size: 128Mi
+      path: /data
+
+    # Traefik runs as 65532; fsGroup makes the volume writable for it.
+    # OnRootMismatch stops kubelet re-chmodding acme.json on every mount
+    # (Traefik refuses to start if acme.json is not mode 600).
+    podSecurityContext:
+      fsGroup: 65532
+      fsGroupChangePolicy: OnRootMismatch
+
+    # A ReadWriteOnce volume can only attach to one node, so stop the old pod
+    # before starting the new one (brief downtime on Traefik updates).
+    updateStrategy:
+      type: Recreate
