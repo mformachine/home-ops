@@ -27,6 +27,18 @@ kubectl create secret generic sops-age -n flux-system \
   --from-file=age.agekey="$HOME/Library/Application Support/sops/age/keys.txt"
 ```
 
+## cluster-secrets (domain and email placeholders)
+
+The repo is public, so the domain and email addresses aren't written in the manifests.
+They appear as `${SECRET_DOMAIN}`, `${SECRET_ACME_EMAIL}` and `${SECRET_SMTP_SENDER}`, and the
+real values live encrypted in [`kubernetes/apps/cluster-secrets.sops.yaml`](../kubernetes/apps/cluster-secrets.sops.yaml).
+Each app's Flux Kustomization fills them in through `postBuild.substituteFrom`.
+
+- **View or edit** (needs the age private key): `sops kubernetes/apps/cluster-secrets.sops.yaml`
+- **Add a variable:** add it under `stringData` with `sops`, then use `${SECRET_NAME}` in a manifest.
+  The app's `ks.yaml` must have the `postBuild.substituteFrom` block.
+- To write a literal `${...}` in a manifest that Flux substitutes, escape it as `$${...}`.
+
 ## Encrypting an existing plaintext Secret file
 
 If you already have a plaintext Secret manifest (kept outside git), encrypt it into the repo

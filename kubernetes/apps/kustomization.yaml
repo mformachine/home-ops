@@ -5,6 +5,8 @@ kind: Kustomization
 # Uncomment one line per PR, merge, and check `flux get ks` before the next.
 resources:
   - ./namespace.yaml
+  # Encrypted values for ${SECRET_*} placeholders, used by the apps' postBuild
+  - ./cluster-secrets.sops.yaml
   # - ./stirling-pdf/ks.yaml
   # - ./filebrowser/ks.yaml
   # - ./observability/ks.yaml

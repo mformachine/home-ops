@@ -42,3 +42,5 @@ Each app folder holds a `ks.yaml` (the Flux Kustomization) and an `app/` folder 
 
 Secrets are encrypted with SOPS + age and decrypted by Flux in the cluster.
 See [docs/secrets.md](docs/secrets.md). Never commit an unencrypted secret.
+The domain and email addresses are kept in the encrypted `kubernetes/apps/cluster-secrets.sops.yaml`
+and filled in by Flux (`${SECRET_DOMAIN}` etc. in the manifests).

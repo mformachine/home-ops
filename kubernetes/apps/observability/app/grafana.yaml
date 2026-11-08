@@ -52,7 +52,7 @@ spec:
             - containerPort: 3000
           env:
             - name: GF_SERVER_ROOT_URL
-              value: "https://grafana.bizleadz.xyz"
+              value: "https://grafana.${SECRET_DOMAIN}"
             - name: GF_DEFAULT_TIMEZONE
               value: "Europe/Berlin"
           volumeMounts:

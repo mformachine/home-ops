@@ -8,7 +8,7 @@ metadata:
     traefik.ingress.kubernetes.io/router.tls.certresolver: letsencrypt
 spec:
   rules:
-    - host: n8n.bizleadz.xyz
+    - host: n8n.${SECRET_DOMAIN}
       http:
         paths:
           - path: /
