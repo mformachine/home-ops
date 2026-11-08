@@ -9,7 +9,7 @@ metadata:
     traefik.ingress.kubernetes.io/router.tls.certresolver: letsencrypt
 spec:
   rules:
-    - host: longhorn.bizleadz.xyz
+    - host: longhorn.${SECRET_DOMAIN}
       http:
         paths:
           - path: /

@@ -26,7 +26,12 @@ curl -s https://fluxcd.io/install.sh | sudo FLUX_VERSION=2.9.2 bash   # match go
 flux --version
 ```
 
-Also: `sops` and `age` (only needed once you add encrypted secrets).
+Also `sops`, to decrypt `cluster-secrets` for the diff in step 2 (the age key is read from
+`~/.config/sops/age/keys.txt`, sops's default location):
+
+```bash
+curl -Lo /tmp/sops https://github.com/getsops/sops/releases/download/v3.13.3/sops-v3.13.3.linux.amd64 && sudo install -m 755 /tmp/sops /usr/local/bin/sops
+```
 
 ## 1. Get this layout onto `main`
 
@@ -47,15 +52,21 @@ kubectl exec -n n8n-prod deploy/postgres -- sh -c 'pg_dump -U "$POSTGRES_USER" "
 
 Plus a Longhorn snapshot of each volume (Longhorn UI → Volumes → Take Snapshot).
 
-Compare every app with what's live. `kubectl diff` only does a dry run; it changes nothing:
+Compare every app with what's live. `kubectl diff` only does a dry run; it changes nothing.
+
+The manifests use `${SECRET_*}` placeholders (domain, emails) that Flux fills in from
+`cluster-secrets`. Load the same values into your shell first, then render exactly as Flux will:
 
 ```bash
-cd home-ops   # a checkout of main
+cd home-ops   # a fresh clone of main
+while IFS='=' read -r k v; do export "$k=$v"; done < <(sops -d --extract '["stringData"]' --output-type dotenv kubernetes/apps/cluster-secrets.sops.yaml)
 for a in stirling-pdf filebrowser observability longhorn-service traefik database n8n-service; do
-  echo "===== $a"; kubectl diff -k kubernetes/apps/$a/app
+  echo "===== $a"; kubectl kustomize kubernetes/apps/$a/app | flux envsubst --strict | kubectl diff -f -
 done
 kubectl diff -f kubernetes/apps/namespace.yaml
 ```
+
+`flux envsubst --strict` stops with an error if any placeholder has no value.
 
 Expected differences, all harmless:
 

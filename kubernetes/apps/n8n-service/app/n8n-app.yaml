@@ -70,13 +70,13 @@ spec:
             
             # --- n8n Core Configuration ---
             - name: N8N_HOST
-              value: "n8n.bizleadz.xyz"
+              value: "n8n.${SECRET_DOMAIN}"
             - name: N8N_PORT
               value: "5678"
             - name: N8N_PROTOCOL
               value: "https"
             - name: WEBHOOK_URL
-              value: "https://n8n.bizleadz.xyz/"
+              value: "https://n8n.${SECRET_DOMAIN}/"
             - name: N8N_SECURE_COOKIE
               value: "true"
             - name: N8N_PROXY_HOPS
@@ -104,7 +104,7 @@ spec:
                   name: n8n-credentials
                   key: SENDGRID_API_KEY
             - name: N8N_SMTP_SENDER
-              value: "n8n Notifications <info@bizleadz.co>"
+              value: "${SECRET_SMTP_SENDER}"
             
             # --- General Settings ---
             - name: GENERIC_TIMEZONE

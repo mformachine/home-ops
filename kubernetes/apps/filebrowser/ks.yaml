@@ -10,6 +10,13 @@ spec:
       app.kubernetes.io/name: *app
   interval: 30m
   path: ./kubernetes/apps/filebrowser/app
+  postBuild:
+    # Fills ${SECRET_*} placeholders from the SOPS-encrypted cluster-secrets
+    # (kubernetes/apps/cluster-secrets.sops.yaml). If it's missing, the sync fails
+    # instead of applying unfilled placeholders.
+    substituteFrom:
+      - kind: Secret
+        name: cluster-secrets
   prune: true
   retryInterval: 2m
   sourceRef:
