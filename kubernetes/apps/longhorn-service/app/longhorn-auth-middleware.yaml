@@ -1,0 +1,15 @@
+---
+# Longhorn's UI has no login of its own: anyone who can reach it can delete volumes.
+# This Traefik middleware puts HTTP basic auth in front of it. The htpasswd entry
+# (bcrypt) lives in the SOPS-encrypted Secret longhorn-basic-auth-users.
+# If that Secret is missing or invalid, Traefik rejects requests (fails closed).
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: longhorn-basic-auth
+  namespace: longhorn-system
+spec:
+  basicAuth:
+    secret: longhorn-basic-auth-users
+    # Don't forward the Authorization header to Longhorn
+    removeHeader: true
