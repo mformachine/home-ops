@@ -5,6 +5,9 @@ kind: PersistentVolumeClaim
 metadata:
   name: n8n-pvc
   namespace: n8n-prod
+  annotations:
+    # Never let Flux delete this volume (and its data) if the manifest is removed or renamed
+    kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   accessModes:
     - ReadWriteOnce

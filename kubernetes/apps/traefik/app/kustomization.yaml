@@ -1,0 +1,7 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  # k3s-bundled Traefik is customised through this HelmChartConfig (kube-system)
+  - ./traefik-config.yaml
+  # TODO: add `- ./cloudflare-api-token.sops.yaml` once encrypted (see docs/secrets.md)
