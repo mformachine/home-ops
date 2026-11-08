@@ -17,7 +17,9 @@ spec:
     spec:
       containers:
         - name: stirling-pdf
-          image: stirlingtools/stirling-pdf:2.7.3
+          # Matches the cluster (running 3.2.2 via :latest as of 2026-11-08) so Flux's first
+          # sync changes nothing. TODO: pin to an exact version in its own PR after handover.
+          image: stirlingtools/stirling-pdf:latest
           ports:
             - containerPort: 8080
           env:
