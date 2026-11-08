@@ -8,7 +8,7 @@ resources:
   # Encrypted values for ${SECRET_*} placeholders, used by the apps' postBuild
   - ./cluster-secrets.sops.yaml
   - ./stirling-pdf/ks.yaml
-  # - ./filebrowser/ks.yaml
+  - ./filebrowser/ks.yaml
   # - ./observability/ks.yaml
   # - ./longhorn-service/ks.yaml
   # - ./traefik/ks.yaml
