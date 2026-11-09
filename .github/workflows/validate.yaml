@@ -37,7 +37,8 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     env:
-      # renovate: datasource=github-releases depName=yannh/kubeconform
+      # Update KUBECONFORM_VERSION and KUBECONFORM_SHA256 together (from the release's
+      # CHECKSUMS file); not managed by Renovate because it can't update the checksum.
       KUBECONFORM_VERSION: v0.8.0
       KUBECONFORM_SHA256: 9bc2bffbf71f261128533edaf912153948b7ff238f9a531ae6d34466ec287883
     steps:
