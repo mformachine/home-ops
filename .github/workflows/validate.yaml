@@ -21,7 +21,7 @@ concurrency:
 jobs:
   secrets:
     name: secrets
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     timeout-minutes: 5
     steps:
       - name: Checkout
@@ -34,7 +34,7 @@ jobs:
 
   manifests:
     name: manifests
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     timeout-minutes: 10
     env:
       # Update KUBECONFORM_VERSION and KUBECONFORM_SHA256 together (from the release's
